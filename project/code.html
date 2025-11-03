@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwachhMitra - Smart Waste Management</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            /* Light grey background */
+        }
+
+        /* Custom gradient text */
+        .text-gradient {
+            background-image: linear-gradient(to right, #10b981, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        /* App mockup notification dot */
+        .notification-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ef4444;
+            /* Red */
+            border-radius: 50%;
+            border: 2px solid #1f2937;
+            /* Dark bg */
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(40%, -40%);
+        }
+
+        /* Dashboard mockup dot */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Custom class for fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Markdown display formatting */
+        #waste-results {
+            white-space: pre-wrap;
+            /* Respects newlines */
+            font-family: 'Inter', sans-serif;
+        }
+
+        #waste-results strong {
+            font-weight: 700;
+            color: #1f2937;
+            /* Darker text for titles */
+        }
+
+        #waste-results * {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-2">
+                <svg class="h-10 w-10" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M43.6263 158.46C18.4444 148.824 0 123.475 0 94.6288C0 57.0761 28.5861 24.343 64.918 19.1678C67.1424 18.7997 69.3093 18.5 71.5 18.5C73.6907 18.5 75.8576 18.7997 78.082 19.1678C82.1738 19.8519 86.068 20.8258 89.7328 22.0623C89.9654 22.1444 90.082 22.1852 90.222 22.2514C90.3541 22.3135 90.5057 22.4042 90.6657 22.518C90.7208 22.556 90.7719 22.5996 90.8703 22.6821C91.071 22.8504 91.314 23.0558 91.5835 23.2847C91.637 23.3262 91.6872 23.3653 91.7342 23.402C91.778 23.4361 91.82 23.4688 91.8601 23.5C92.1793 23.7297 92.5312 23.9859 92.908 24.2625C93.001 24.329 93.0906 24.3934 93.1768 24.4556C93.342 24.5752 93.5187 24.7042 93.7044 24.8407C93.7667 24.8879 93.826 24.9329 93.8824 24.9757C94.0028 25.0664 94.1306 25.1633 94.264 25.2651C94.3449 25.3262 94.4223 25.3846 94.4962 25.4402C95.5332 26.2483 96.6582 27.1245 97.8596 28.061C98.0531 28.2104 98.239 28.3533 98.4177 28.4901C111.45 38.4411 120.735 52.4939 124.697 68.5113C125.034 69.8732 125.337 71.261 125.602 72.6713C125.619 72.7663 125.636 72.8617 125.653 72.9576C125.688 73.1506 125.726 73.3452 125.766 73.5413C125.776 73.5898 125.786 73.6382 125.797 73.6868C125.83 73.8341 125.864 73.9822 125.9 74.1312C125.909 74.1722 125.918 74.2131 125.927 74.2541C126.02 74.7061 126.12 75.1634 126.226 75.626C126.234 75.6606 126.241 75.695 126.249 75.7293C126.336 76.0963 126.428 76.466 126.524 76.8385C126.536 76.8842 126.548 76.9298 126.56 76.9752C126.634 77.26 126.711 77.5469 126.791 77.8358C126.801 77.8735 126.811 77.911 126.821 77.9484C126.883 78.1633 126.947 78.3794 127.014 78.5968C127.022 78.6234 127.03 78.6499 127.038 78.6763C127.087 78.8351 127.137 78.9944 127.188 79.1542C127.194 79.1741 127.2 79.1939 127.206 79.2137C127.243 79.3331 127.281 79.4528 127.32 79.5728C127.325 79.5862 127.33 79.5996 127.335 79.613C127.361 79.6924 127.387 79.7719 127.414 79.8516C127.422 79.878 127.43 79.9044 127.438 79.9308C127.457 79.9928 127.476 80.0549 127.496 80.1171C127.501 80.1337 127.505 80.1499 127.51 80.1664C127.535 80.2454 127.561 80.3245 127.587 80.4038C127.592 80.419 127.597 80.434 127.602 80.4491C127.618 80.4991 127.634 80.5492 127.65 80.5993C127.653 80.6069 127.656 80.6145 127.658 80.6221C127.678 80.6822 127.697 80.7423 127.717 80.8024C127.72 80.8119 127.722 80.8213 127.725 80.8307C127.74 80.8757 127.755 80.9207 127.77 80.9657C127.772 80.9729 127.774 80.9801 127.776 80.9873C127.788 81.0247 127.8 81.062 127.812 81.0993C127.813 81.103 127.814 81.1067 127.815 81.1104C127.824 81.1391 127.832 81.1678 127.841 81.1965C127.842 81.2009 127.843 81.2053 127.844 81.2097C127.85 81.2284 127.856 81.247 127.862 81.2657C127.863 81.2687 127.864 81.2717 127.865 81.2747C127.87 81.2896 127.875 81.3046 127.88 81.3195C127.88 81.3204 127.88 81.3213 127.881 81.3222C118.825 107.57 95.8236 125.968 67.9351 130.344L67.9252 130.345C61.4162 131.32 54.8051 131.54 48.2405 130.999C48.0903 130.985 47.9403 130.971 47.7906 130.957C45.2891 130.73 42.8256 130.343 40.4079 129.801L40.3879 129.797C39.2773 129.544 38.176 129.255 37.0849 128.931C36.9651 128.898 36.8458 128.865 36.7268 128.832C35.5393 128.498 34.3644 128.132 33.2036 127.734C33.0805 127.693 32.958 127.651 32.8359 127.609C31.666 127.208 30.5103 126.776 29.3703 126.315C29.2526 126.271 29.1354 126.226 29.0187 126.182C27.8698 125.717 26.7366 125.222 25.6208 124.698C25.5082 124.646 25.396 124.594 25.2843 124.542C24.1593 124.014 23.0514 123.458 21.9622 122.875C21.8546 122.819 21.7474 122.763 21.6407 122.707C20.5423 122.12 19.4624 121.506 18.4026 120.866C18.2998 120.799 18.1975 120.731 18.0957 120.664C17.0269 120.019 15.9782 119.348 14.9512 118.653C14.8532 118.583 14.7557 118.512 14.6587 118.442C13.6227 117.741 12.6084 117.016 11.617 116.27C11.5235 116.202 11.4304 116.134 11.3378 116.066C10.3377 115.315 9.36024 114.541 8.40654 113.746C8.31742 113.67 8.22876 113.593 8.14056 113.517C7.17822 112.716 6.23933 111.893 5.32505 111.05C5.24021 110.969 5.15583 110.887 5.07192 110.805L5.07096 110.804C4.1501 109.955 3.25471 109.085 2.386 108.196L2.38558 108.195C1.5113 107.299 0.664421 106.384 0.16017 105.783C25.464 120.825 57.062 120.825 82.3658 105.783L82.366 108.195C81.4973 109.085 80.593 109.955 79.673 110.804C79.5891 110.886 79.5047 110.968 79.4199 111.049C78.5056 111.892 77.5667 112.715 76.6044 113.516C76.5162 113.592 76.4275 113.669 76.3384 113.745C75.3847 114.54 74.4072 115.314 73.4071 116.065C73.3145 116.133 73.2214 116.201 73.1279 116.269C72.1365 117.015 71.1222 117.74 70.0862 118.441C69.9892 118.511 69.8917 118.582 69.7937 118.652C68.7667 119.347 67.718 120.018 66.6492 120.663C66.5474 120.73 66.4451 120.798 66.3423 120.865C65.2825 121.505 64.2026 122.119 63.1042 122.706C62.9975 122.762 62.8903 122.818 62.7827 122.874C61.6735 123.457 60.5836 124.013 59.4586 124.541C59.3469 124.593 59.2347 124.645 59.1221 124.697C58.0063 125.221 56.8731 125.716 55.7242 126.181C55.6075 126.225 55.4903 126.27 55.3726 126.314C54.2326 126.775 53.0869 127.207 51.917 127.608C51.7949 127.65 51.6724 127.692 51.5493 127.733C50.3885 128.131 49.2136 128.497 48.0261 128.831C47.9071 128.864 47.7878 128.897 47.668 128.93C46.5769 129.254 45.4756 129.543 44.365 129.796C41.9473 130.342 39.4838 130.729 36.9823 130.956C36.8326 130.97 36.6826 130.984 36.5324 130.998C30.0159 131.54 23.4571 131.323 16.993 130.354L16.9922 130.353C-10.8963 125.978 -33.8979 107.57 -42.9536 81.3222C-42.9545 81.3213 -42.9554 81.3204 -42.9563 81.3195C-42.9612 81.3046 -42.9661 81.2896 -42.971 81.2747C-42.972 81.2717 -42.9729 81.2687 -42.9739 81.2657C-42.9798 81.247 -42.9857 81.2284 -42.9867 81.2097C-42.9877 81.2053 -42.9886 81.2009 -42.9896 81.1965C-42.9985 81.1678 -44.7573 76.2415 -44.918 71.5C-44.7573 66.7585 -42.9985 61.8322 -42.9896 61.8035C-42.9886 61.7991 -42.9877 61.7947 -42.9867 61.7903C-42.9857 61.7716 -42.9798 61.753 -42.9739 61.7343C-42.9729 61.7313 -42.972 61.7283 -42.971 61.7253C-42.9661 61.7104 -42.9612 61.6954 -42.9563 61.6805C-42.9554 61.6796 -42.9545 61.6787 -42.9536 61.6778C-42.9402 61.6378 -42.9269 61.5977 -42.9137 61.5577C-42.9103 61.5471 -42.907 61.5365 -42.9037 61.5259C-42.8906 61.4859 -42.8775 61.446 -42.8645 61.4061C-42.8601 61.3934 -42.8558 61.3807 -42.8515 61.3681C-42.8252 61.2885 -42.7989 61.209 -42.7728 61.1296C-42.7681 61.1145 -42.7635 61.0995 -42.759 61.0845C-42.7335 60.9953 -42.7082 60.9061 -42.683 60.817C-42.678 60.8005 -42.6731 60.7842 -42.6682 60.768C-42.6375 60.6559 -42.607 60.544 -42.5767 60.4323C-42.5714 60.4136 -42.5662 60.395 -42.561 60.3764C-42.5204 60.2166 -42.4801 60.0573 -42.4402 59.8985C-42.4357 59.8787 -42.4312 59.859 -42.4267 59.8392C-42.3768 59.6218 -42.3273 59.4057 -42.2782 59.1908C-42.2709 59.1606 -42.2636 59.1305 -42.2564 59.1004C-42.1973 58.8296 -42.1387 58.5607 -42.0807 58.2936C-42.068 58.2285 -42.0554 58.1636 -42.0429 58.0988C-41.9576 57.6713 -41.8728 57.2464 -41.7887 56.824C-41.7818 56.7915 -41.7749 56.759 -41.7681 56.7265C-41.6706 56.1791 -41.5736 55.636 -41.4774 55.097C-41.4688 55.0504 -41.4603 55.0038 -41.4518 54.9573C-41.352 54.3986 -41.2528 53.844 -41.1543 53.2934C-41.1444 53.2384 -41.1345 53.1834 -41.1246 53.1285C-41.0622 52.7932 -41.0001 52.46 -40.9384 52.1287C-40.928 52.0722 -40.9176 52.0157 -40.9073 51.9593C-40.8322 51.5162 -40.7575 51.075 -40.6833 50.6358C-40.6728 50.5786 -40.6624 50.5215 -40.6521 50.4645C-40.5562 49.9192 -40.4609 49.3758 -40.3662 48.8345C-40.3551 48.7675 -40.3441 48.7005 -40.3331 48.6337C-40.2173 47.971 -40.1022 47.3106 -39.9877 46.6525C-39.9749 46.5772 -39.9622 46.502 -39.9496 46.427C-39.808 45.6267 -39.6672 44.83 -39.5273 44.0371C-39.5118 43.9482 -39.4964 43.8594 -39.4811 43.7708C-39.3088 42.842 -39.1375 41.917 -38.9673 41.00C-38.9489 40.9006 -38.9306 40.8013 -38.9124 40.7022C-38.6973 39.5885 -38.4835 38.4802 -38.271 37.3773C-38.2494 37.2603 -38.2279 37.1435 -38.2065 37.027C-37.9404 35.696 -37.6761 34.3707 -37.4137 33.051C-37.3828 32.8906 -37.352 32.7305 -37.3214 32.5707C-32.0622 8.4239 0 0 31.5 0C63 0 94.9378 8.4239 127.321 32.5707C127.352 32.7305 127.383 32.8906 127.414 33.051C127.676 34.3707 127.94 35.696 128.207 37.027C128.228 37.1435 128.249 37.2603 128.271 37.3773C128.483 38.4802 128.697 39.5885 128.912 40.7022C128.931 40.8013 128.949 40.9006 128.967 41.00C129.137 41.917 129.309 42.842 129.481 43.7708C129.496 43.8594 129.512 43.9482 129.527 44.0371C129.667 44.83 129.808 45.6267 129.95 46.427C129.962 46.502 129.975 46.5772 129.988 46.6525C130.102 47.3106 130.217 47.971 130.333 48.6337C130.344 48.7005 130.355 48.7675 130.366 48.8345C130.461 49.3758 130.556 49.9192 130.652 50.4645C130.662 50.5215 130.673 50.5786 130.683 50.6358C130.757 51.075 130.832 51.5162 130.907 51.9593C130.918 52.0157 130.928 52.0722 130.938 52.1287C131 52.46 131.062 52.7932 131.125 53.1285C131.134 53.1834 131.144 53.2384 131.154 53.2934C131.253 53.844 131.352 54.3986 131.452 54.9573C131.46 55.0038 131.469 55.0504 131.477 55.097C131.573 55.636 131.671 56.1791 131.768 56.7265C131.775 56.759 131.782 56.7915 131.789 56.824C131.873 57.2464 131.957 57.6713 132.043 58.0988C132.055 58.1636 132.068 58.2285 132.081 58.2936C132.139 58.5607 132.197 58.8296 132.256 59.1004C132.264 59.1305 132.271 59.1606 132.278 59.1908C132.327 59.4057 132.377 59.6218 132.427 59.8392C132.431 59.859 132.436 59.8787 132.44 59.8985C132.48 60.0573 132.52 60.2166 132.561 60.3764C132.566 60.395 132.571 60.4136 132.577 60.4323C132.607 60.544 132.637 60.6559 132.668 60.768C132.673 60.7842 132.678 60.8005 132.683 60.817C132.708 60.9061 132.733 60.9953 132.759 61.0845C132.763 61.0995 132.768 61.1145 132.773 61.1296C132.799 61.209 132.825 61.2885 132.851 61.3681C132.856 61.3807 132.86 61.3934 132.864 61.4061C132.877 61.446 132.89 61.4859 132.904 61.5259C132.907 61.5365 132.91 61.5471 132.914 61.5577C132.927 61.5977 132.94 61.6378 132.954 61.6778C132.954 61.6787 132.955 61.6796 132.956 61.6805C132.961 61.6954 132.966 61.7104 132.971 61.7253C132.972 61.7283 132.973 61.7313 132.974 61.7343C132.98 61.753 132.986 61.7716 132.987 61.7903C132.988 61.7947 132.989 61.7991 132.99 61.8035C132.999 61.8322 134.757 66.7585 134.918 71.5C134.757 76.2415 132.999 81.1678 132.99 81.1965C132.989 81.2009 132.988 81.2053 132.987 81.2097C132.986 81.2284 132.98 81.247 132.974 81.2657C132.973 81.2687 132.972 81.2717 132.971 81.2747C132.966 81.2896 132.961 81.3046 132.956 81.3195C132.955 81.3204 132.954 81.3213 132.954 81.3222L132.953 81.3222C123.898 107.57 100.896 125.968 72.9754 130.345L72.9655 130.344C89.1725 128.751 103.951 123.102 115.82 114.364C127.69 105.625 136.215 94.137 140.435 80.9873C149.332 94.137 146.408 111.411 133.513 121.78C120.618 132.149 100.352 135.071 82.366 127.333L82.3658 130.999C100.352 138.738 127.098 135.485 144.113 121.78C161.127 108.075 164.051 84.137 151.156 68.5113C149.332 66.1118 147.287 63.8236 145.04 61.6666L145.039 61.6662C133.17 52.9276 118.391 48.0673 102.366 47.783L102.366 42.783C118.391 43.0673 133.17 47.9276 145.039 56.6662L145.04 56.6666C147.287 58.8236 149.332 61.1118 151.156 63.5113C164.051 79.137 161.127 103.075 144.113 116.78C1cS 130.485 100.352 133.738 82.3658 125.999L82.366 122.333C100.352 130.071 120.618 127.149 133.513 116.78C146.408 106.411 149.332 89.137 140.435 75.9873C136.215 62.837 127.69 51.3495 115.82 42.6107C103.951 33.8719 89.1725 28.223 72.9655 26.63L72.9754 26.6293C95.8236 22.9715 116.511 31.758 127.321 32.5707L127.321 32.5707C94.9378 8.4239 63 0 31.5 0C0 0 -32.0622 8.4239 -42.6833 32.5707C-37.5458 20.2198 -26.0371 11.2319 -12.9655 7.62928C0.0826131 4.02662 14.7606 5.88544 26.6293 11.6242C38.498 17.363 46.9723 26.7126 50.8407 38.3334C44.9723 26.7126 33.0238 17.363 21.155 11.6242C9.28634 5.88544 -5.3916 4.02662 -18.4411 7.62928C-31.4892 11.2319 -43.018 20.2198 -48.1554 32.5707L-48.1554 32.5707C-14.5458 40.3095 14.6366 52.9276 16.9922 79.1662L16.993 79.1666C19.3486 52.9276 48.531 40.3095 82.366 32.5707L82.3658 32.5707C82.3658 32.5707 82.3658 32.5707 82.366 32.5707C57.062 47.6128 25.464 47.6128 0.16017 62.783C-5.3916 79.137 6.15502 96.4111 21.155 106.78C36.155 117.149 56.4212 120.071 74.4074 112.333L74.4072 115.999C56.4212 123.738 29.6747 120.485 12.6601 106.78C-4.35451 93.0751 -1.43029 69.137 11.4646 53.5113C13.2889 51.1118 15.3344 48.8236 17.5815 46.6666L17.582 46.6662C29.4507 37.9276 44.2292 33.0673 60.2547 32.783L60.2547 37.783C44.2292 38.0673 29.4507 42.9276 17.582 51.6662L17.5815 51.6666C15.3344 53.8236 13.2889 56.1118 11.4646 58.5113C-1.43029 74.137 -4.35451 98.0751 12.6601 111.78C29.6747 125.485 56.4212 128.738 74.4072 120.999L74.4074 124.666C56.4212 132.404 36.155 135.326 21.155 124.957C6.15502 114.588 -5.3916 97.3139 0.16017 81.1666C0.16017 81.1666 0.16017 81.1666 0.16017 81.1666C25.464 66.1245 57.062 66.1245 82.3658 81.1666C82.3658 81.1666 82.3658 81.1666 82.366 81.1666C82.366 81.1666 82.366 81.1666 82.366 81.1666C107.67 66.1245 139.268 66.1245 164.572 81.1666L164.572 81.1666C169.962 97.3139 158.468 114.588 143.468 124.957C128.468 135.326 108.202 132.404 90.2156 124.666L90.2154 120.999C108.202 128.738 134.948 125.485 151.963 111.78C168.977 98.0751 166.053 74.137 153.158 58.5113C151.334 56.1118 149.288 53.8236 147.041 51.6666L147.041 51.6662C135.172 42.9276 120.393 38.0673 104.368 37.783L104.368 32.783C120.393 33.0673 135.172 37.9276 147.041 46.6662L147.041 46.6666C149.288 48.8236 151.334 51.1118 153.158 53.5113C166.053 69.137 168.977 93.0751 151.963 106.78C134.948 120.485 108.202 123.738 90.2154 115.999L90.2156 112.333C108.202 120.071 128.468 117.149 141.363 106.78C154.258 96.4111 161.182 79.137 155.792 62.783C130.488 47.6128 98.8901 47.6128 73.5861 62.783L73.586 62.783C68.1963 79.137 75.1205 96.4111 88.0154 106.78C100.91 117.149 121.176 120.071 139.162 112.333L139.162 115.999C121.176 123.738 94.4303 120.485 77.4157 106.78C60.4011 93.0751 63.3253 69.137 76.2202 53.5113C78.0445 51.1118 80.09 48.8236 82.3371 46.6666L82.337 46.6662C94.2057 37.9276 108.984 33.0673 125.01 32.783L125.01 37.783C108.984 38.0673 94.2057 42.9276 82.337 51.6662L82.3371 51.6666C80.09 53.8236 78.0445 56.1118 76.2202 58.5113C63.3253 74.137 60.4011 98.0751 77.4157 111.78C94.4303 125.485 121.176 128.738 139.162 120.999L139.162 124.666C121.176 132.404 100.91 135.326 88.0154 124.957C73.0155 114.588 64.5412 97.3139 69.1309 81.1666C43.8269 66.1245 12.2289 66.1245 -13.075 81.1666L-13.075 81.1666C-18.4647 97.3139 -6.9704 114.588 7.9704 124.957C22.9704 135.326 43.2366 132.404 61.2228 124.666L61.2228 120.999C43.2366 128.738 16.4901 125.485 -0.524497 111.78C-17.5391 98.0751 -14.6149 74.137 -1.71997 58.5113C0.104332 56.1118 2.15014 53.8236 4.3972 51.6666L4.39762 51.6662C16.2663 42.9276 31.0448 38.0673 47.0703 37.783L47.0703 32.783C31.0448 33.0673 16.2663 37.9276 4.39762 46.6662L4.3972 46.6666C2.15014 48.8236 0.104332 51.1118 -1.71997 53.5113C-14.6149 69.137 -17.5391 93.0751 -0.524497 106.78C16.4901 120.485 43.2366 123.738 61.2228 115.999L61.2228 112.333C43.2366 120.071 22.9704 117.149 16.0655 106.78C9.16068 96.4111 6.23646 79.137 11.6262 62.783C36.9302 47.6128 68.5282 47.6128 93.832 62.783L93.8321 62.783C99.2218 79.137 92.2976 96.4111 79.4027 106.78C66.5078 117.149 46.2415 120.071 28.2554 112.333L28.2554 115.999C46.2415 123.738 72.988 120.485 89.9434 106.78C106.958 93.0751 104.034 69.137 91.1388 53.5113C89.3145 51.1118 87.2687 48.8236 85.0216 46.6666L85.0212 46.6662C73.1525 37.9276 58.374 38.0673 42.3485 37.783L42.3485 32.783C58.374 33.0673 73.1525 37.9276 85.0212 46.6662L85.0216 46.6666C87.2687 48.8236 89.3145 51.1118 91.1388 53.5113C104.034 69.137 106.958 93.0751 89.9434 106.78C72.988 120.485 46.2415 123.738 28.2554 115.999L28.2554 112.333C46.2415 120.071 66.5078 117.149 79.4027 106.78C92.2976 96.4111 99.2218 79.137 93.8321 62.783C119.136 47.6128 150.734 47.6128 176.038 62.783L176.038 62.783C181.428 79.137 174.503 96.4111 161.608 106.78C148.713 117.149 128.447 120.071 110.461 112.333L110.461 115.999C128.447 123.738 155.194 120.485 172.149 106.78C189.164 93.0751 186.24 69.137 173.345 53.5113C171.52 51.1118 169.475 48.8236 167.228 46.6666L167.227 46.6662C155.359 37.9276 140.58 33.0673 124.555 32.783L124.555 37.783C140.58 38.0673 155.359 42.9276 167.227 51.6662L167.228 51.6666C169.475 53.8236 171.52 56.1118 173.345 58.5113C186.24 74.137 189.164 98.0751 172.149 111.78C155.194 125.485 128.447 128.738 110.461 120.999L110.461 124.666C128.447 132.404 148.713 135.326 161.608 124.957C176.608 114.588 185.082 97.3139 179.693 81.1666C154.389 66.1245 122.791 66.1245 97.4868 81.1666L97.4867 81.1666C102.876 97.3139 95.9521 114.588 83.0572 124.957C68.0572 135.326 47.791 132.404 29.8048 124.666L29.8048 120.999C47.791 128.738 74.5375 125.485 91.4929 111.78C108.508 98.0751 105.583 74.137 92.6883 58.5113C90.864 56.1118 88.8182 53.8236 86.5712 51.6666L86.5716 51.6662C74.7029 42.9276 59.9244 38.0673 43.8989 37.783L43.8989 32.783C59.9244 33.0673 74.7029 37.9276 86.5716 46.6662L86.5712 46.6666C88.8182 48.8236 90.864 51.1118 92.6883 53.5113C105.583 69.137 108.508 93.0751 91.4929 106.78C74.5375 120.485 47.791 123.738 29.8048 115.999L29.8048 112.333C47.791 120.071 68.0572 117.149 83.0572 106.78C95.9521 96.4111 102.876 79.137 97.4867 62.783C72.1829 47.6128 40.5849 47.6128 15.2809 62.783L15.2809 62.783C9.89122 79.137 16.8154 96.4111 29.7103 106.78C42.6052 117.149 62.8715 120.071 80.8576 112.333L80.8576 115.999C62.8715 123.738 36.125 120.485 19.1696 106.78C2.15502 93.0751 5.07924 69.137 17.9741 53.5113C19.7984 51.1118 21.8442 48.8236 24.0913 46.6666L24.0917 46.6662C35.9604 37.9276 50.7389 33.0673 66.7644 32.783L66.7644 37.783C50.7389 38.0673 35.9604 42.9276 24.0917 51.6662L24.0913 51.6666C21.8442 53.8236 19.7984 56.1118 17.9741 58.5113C5.07924 74.137 2.15502 98.0751 19.1696 111.78C36.125 125.485 62.8715 128.738 80.8576 120.999L80.8576 124.666C62.8715 132.404 42.6052 135.326 29.7103 124.957C14.7103 114.588 6.23608 97.3139 10.8258 81.1666C36.1298 66.1245 67.7278 66.1245 93.0317 81.1666L93.0317 81.1666C87.642 97.3139 94.5662 114.588 107.461 124.957C122.461 135.326 142.727 132.404 160.713 124.666L160.713 120.999C142.727 128.738 115.981 125.485 99.0254 111.78C82.0108 98.0751 84.9351 74.137 97.83 58.5113C99.6543 56.1118 101.7 48.8236 103.947 46.6666L103.947 46.6662C115.816 37.9276 130.594 33.0673 146.62 32.783L146.62 37.783C130.594 38.0673 115.816 42.9276 103.947 51.6662L103.947 51.6666C101.7 53.8236 99.6543 56.1118 97.83 58.5113C84.9351 74.137 82.0108 98.0751 99.0254 111.78C115.981 125.485 142.727 128.738 160.713 120.999L160.713 112.333C142.727 120.071 122.461 117.149 107.461 106.78C94.5662 96.4111 87.642 79.137 93.0317 62.783C118.336 47.6128 149.934 47.6128 175.238 62.783L175.238 62.783C175.238 62.783 175.238 62.783 175.238 62.783C158.468 148.824 135.155 158.46 110.5 158.46C85.8447 158.46 62.5317 148.824 43.6263 158.46Z"
+                        fill="url(#paint0_linear_1_2)" />
+                    <defs>
+                        <linearGradient id="paint0_linear_1_2" x1="-48.1554" y1="71.5" x2="181.428" y2="71.5"
+                            gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#10B981" />
+                            <stop offset="0.5" stop-color="#06B6D4" />
+                            <stop offset="1" stop-color="#3B82F6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="font-bold text-2xl text-gray-800">Swachh<span class="text-green-500">Mitra</span></span>
+            </a>
+
+            <!-- Search Bar (Cosmetic) -->
+            <div class="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 w-1/3">
+                <i class="fas fa-search text-gray-400"></i>
+                <input type="text" placeholder="Search..."
+                    class="bg-transparent outline-none ml-2 text-gray-700 w-full">
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#solution" class="text-gray-600 hover:text-green-500 transition-colors">Solution</a>
+                <a href="#features" class="text-gray-600 hover:text-green-500 transition-colors">Features</a>
+                <a href="#app" class="text-gray-600 hover:text-green-500 transition-colors">App</a>
+                <a href="#contact"
+                    class="bg-green-500 text-white px-5 py-2 rounded-full hover:bg-green-600 transition-shadow shadow-md hover:shadow-lg">
+                    Get Involved
+                </a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button class="text-gray-800">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="container mx-auto px-6 py-20 md:py-32 flex flex-col md:flex-row items-center">
+            <!-- Hero Text -->
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-6xl font-black text-gray-900 leading-tight mb-6">
+                    A <span class="text-gradient">Smarter</span> Solution
+                    for India's Waste.
+                </h1>
+                <p class="text-lg text-gray-600 mb-10">
+                    SwachhMitra is an AI-powered smart bin ecosystem that automates waste segregation, gamifies recycling,
+                    and optimizes municipal collection routes.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#solution"
+                        class="bg-green-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-shadow shadow-lg hover:shadow-xl">
+                        Learn More
+                    </a>
+                    <a href="#contact"
+                        class="bg-white text-gray-700 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-100 transition-shadow shadow-lg hover:shadow-xl border border-gray-200">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+            <!-- Hero Image (Smart Bin Mockup) -->
+            <div class="md:w-1/2 flex justify-center">
+                <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm">
+                    <div class="bg-gray-200 h-12 rounded-t-lg flex items-center px-4">
+                        <div class="w-3 h-3 bg-red-400 rounded-full mr-2"></div>
+                        <div class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></div>
+                        <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                    </div>
+                    <div class="bg-gray-800 text-white p-4 text-center rounded-b-lg">
+                        <i class="fas fa-recycle text-5xl text-green-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">SwachhMitra Smart Bin</h3>
+                        <p class="text-gray-300">Model: SM-100</p>
+                    </div>
+                    <div class="relative h-64 bg-gray-100 mt-6 rounded-lg">
+                        <!-- Bin Body -->
+                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4/5 h-60 bg-gray-300 rounded-t-lg">
+                            <div class="w-full h-8 bg-gray-700 rounded-t-lg flex items-center justify-center">
+                                <span class="text-white text-sm font-medium">IoT Sensor Active</span>
+                            </div>
+                            <!-- Flaps -->
+                            <div class="flex justify-around mt-4 px-2">
+                                <div class="w-1/3 bg-blue-500 h-10 rounded text-white text-xs flex items-center justify-center font-bold">DRY</div>
+                                <div class="w-1/3 bg-green-500 h-10 rounded text-white text-xs flex items-center justify-center font-bold">WET</div>
+                                <div class="w-1/3 bg-red-500 h-10 rounded text-white text-xs flex items-center justify-center font-bold">PLASTIC</div>
+                            </div>
+                            <!-- Camera -->
+                            <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 w-16 h-8 rounded-t-md flex items-center justify-center">
+                                <div class="w-4 h-4 bg-cyan-300 rounded-full border-2 border-gray-600"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New: Waste Disposal Guide -->
+        <section id="waste-guide" class="py-20 bg-white">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900">Waste Disposal Guide</h2>
+                    <p class="text-lg text-gray-600 mt-3">Don't know how to dispose of an item? Ask our AI assistant.</p>
+                </div>
+
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-100">
+                    <!-- Input Area -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <!-- Text Input -->
+                        <div class="flex-grow flex items-center bg-gray-100 rounded-full px-5">
+                            <i class="fas fa-trash-alt text-gray-400"></i>
+                            <input type="text" id="waste-input"
+                                placeholder="e.g., 'Plastic Bottle', 'Banana Peel', 'Battery'..."
+                                class="w-full bg-transparent p-4 text-lg text-gray-800 placeholder-gray-500 outline-none border-none focus:ring-0">
+                        </div>
+
+                        <!-- Camera Upload -->
+                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                        <label id="image-upload-label" for="image-upload"
+                            class="flex-shrink-0 flex items-center justify-center gap-3 bg-gray-700 text-white px-6 py-4 rounded-full text-lg font-semibold cursor-pointer hover:bg-gray-800 transition-all shadow-md">
+                            <i class="fas fa-camera"></i>
+                            <span id="image-upload-text">Use Camera</span>
+                        </label>
+
+                        <!-- Search Button -->
+                        <button id="search-button"
+                            class="flex-shrink-0 bg-green-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-600 transition-shadow shadow-md hover:shadow-lg">
+                            <i class="fas fa-search"></i>
+                            <span class="sm:hidden ml-2">Search</span>
+                        </button>
+                    </div>
+
+                    <!-- Results Area -->
+                    <div id="results-container" class="mt-8 hidden">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Disposal Instructions</h3>
+                        <div id="loading-spinner" class="hidden flex items-center space-x-3">
+                            <i class="fas fa-spinner animate-spin text-2xl text-green-500"></i>
+                            <span class="text-gray-600">Our AI is thinking...</span>
+                        </div>
+                        <div id="error-message" class="hidden p-4 bg-red-100 text-red-700 rounded-lg"></div>
+                        <div id="waste-results" class="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                            <!-- Results will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Problem Section -->
+        <section id="problem" class="py-20 bg-gray-100 fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-sm font-bold uppercase text-green-600 tracking-widest">The Problem</h2>
+                    <p class="text-4xl font-bold text-gray-900 mt-3">India's Unmanaged Waste Crisis</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Card 1 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <i class="fas fa-dumpster-fire text-5xl text-red-500 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Overflowing Landfills</h3>
+                        <p class="text-gray-600">Over 90% of waste is dumped unsegregated, leading to massive, toxic
+                            landfills that pollute air, water, and soil.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <i class="fas fa-recycle text-5xl text-blue-500 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Contaminated Recyclables</h3>
+                        <p class="text-gray-600">When wet waste mixes with dry waste, it contaminates valuable
+                            recyclables like paper and plastic, making them unusable.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <i class="fas fa-truck-moving text-5xl text-yellow-500 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Inefficient Collection</h3>
+                        <p class="text-gray-600">Municipal trucks follow fixed routes, often visiting half-empty bins or
+                            missing overflowing ones, wasting fuel and time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section id="solution" class="py-20 bg-white fade-in">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <!-- Solution Text -->
+                <div class="md:w-1/2">
+                    <h2 class="text-sm font-bold uppercase text-green-600 tracking-widest">Our Solution</h2>
+                    <p class="text-4xl font-bold text-gray-900 mt-3 mb-6">An Integrated Smart Ecosystem</p>
+                    <p class="text-lg text-gray-600 mb-8">
+                        SwachhMitra tackles the problem at every stage, from disposal to collection. We combine
+                        hardware, AI, and a user-centric app to create a closed-loop system for waste management.
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-robot text-2xl text-green-500 mt-1"></i>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">Automatic Segregation</h3>
+                                <p class="text-gray-600">Onboard AI identifies waste (wet, dry, plastic) and sorts it
+                                    automatically.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-mobile-alt text-2xl text-green-500 mt-1"></i>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">Public Gamification</h3>
+                                <p class="text-gray-600">A mobile app rewards users with "Green Points" for correct
+                                    disposal.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-route text-2xl text-green-500 mt-1"></i>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">Dynamic Route Optimization</h3>
+                                <p class="text-gray-600">IoT sensors report fill-levels for AI-powered, efficient
+                                    collection routes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Solution Image (Diagram) -->
+                <div class="md:w-1/2 bg-gray-100 p-8 rounded-2xl shadow-inner border">
+                    <h3 class="text-xl font-bold text-center mb-6">SwachhMitra System Flow</h3>
+                    <div class="space-y-4">
+                        <!-- Step 1 -->
+                        <div class="flex items-center">
+                            <div
+                                class="bg-green-500 text-white w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl">
+                                1</div>
+                            <div class="ml-4 bg-white p-4 rounded-lg shadow-md flex-grow">
+                                <span class="font-semibold">User scans QR & disposes waste.</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 h-8 border-l-2 border-green-500 border-dashed"></div>
+                        <!-- Step 2 -->
+                        <div class="flex items-center">
+                            <div
+                                class="bg-green-500 text-white w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl">
+                                2</div>
+                            <div class="ml-4 bg-white p-4 rounded-lg shadow-md flex-grow">
+                                <span class="font-semibold">AI Camera identifies & sorts waste (Wet, Dry, Plastic).</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 h-8 border-l-2 border-green-500 border-dashed"></div>
+                        <!-- Step 3 -->
+                        <div class="flex items-center">
+                            <div
+                                class="bg-green-500 text-white w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl">
+                                3</div>
+                            <div class="ml-4 bg-white p-4 rounded-lg shadow-md flex-grow">
+                                <span class="font-semibold">User receives "Green Points" on the app.</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 h-8 border-l-2 border-green-500 border-dashed"></div>
+                        <!-- Step 4 -->
+                        <div class="flex items-center">
+                            <div
+                                class="bg-green-500 text-white w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl">
+                                4</div>
+                            <div class="ml-4 bg-white p-4 rounded-lg shadow-md flex-grow">
+                                <span class="font-semibold">IoT sensor reports bin fill-level to cloud dashboard.</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 h-8 border-l-2 border-green-500 border-dashed"></div>
+                        <!-- Step 5 -->
+                        <div class="flex items-center">
+                            <div
+                                class="bg-green-500 text-white w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl">
+                                5</div>
+                            <div class="ml-4 bg-white p-4 rounded-lg shadow-md flex-grow">
+                                <span class="font-semibold">AI generates optimized route for collection truck.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-20 bg-gray-100 fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-sm font-bold uppercase text-green-600 tracking-widest">Core Features</h2>
+                    <p class="text-4xl font-bold text-gray-900 mt-3">Technology in Action</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200 flex flex-col">
+                        <i class="fas fa-camera-retro text-5xl text-gradient mb-6"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">AI Waste Identification</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">A high-speed camera paired with a lightweight Convolutional
+                            Neural Network (CNN) instantly identifies the waste type as it falls.</p>
+                        <span class="font-medium text-green-600">Accuracy: 95%+</span>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200 flex flex-col">
+                        <i class="fas fa-cogs text-5xl text-gradient mb-6"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Motorized Sorting Flaps</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Based on the AI's signal, high-torque motorized flaps
+                            direct the waste into the correct compartment (Wet, Dry, or Plastic) in milliseconds.</p>
+                        <span class="font-medium text-green-600">Sorting Time: &lt; 1 sec</span>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200 flex flex-col">
+                        <i class="fas fa-satellite-dish text-5xl text-gradient mb-6"></i>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Real-Time IoT Sensors</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Ultrasonic sensors in each compartment measure fill
+                            levels. This data is transmitted in real-time to a central dashboard via a cellular (4G/5G)
+                            module.</p>
+                        <span class="font-medium text-green-600">Connectivity: 99.9% Uptime</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gamification (App) Section -->
+        <section id="app" class="py-20 bg-white fade-in">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <!-- App Mockup -->
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-80 h-[600px] bg-gray-900 rounded-[40px] border-8 border-gray-800 shadow-2xl overflow-hidden">
+                        <!-- App Header -->
+                        <div class="h-20 bg-gray-800 flex items-end p-4 justify-between">
+                            <div class="flex items-center">
+                                <svg class="h-8 w-8" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.6263 158.46C18.4444 148.824 0 123.475 0 94.6288C0 57.0761 28.5861 24.343 64.918 19.1678C67.1424 18.7997 69.3093 18.5 71.5 18.5C73.6907 18.5 75.8576 18.7997 78.082 19.1678C82.1738 19.8519 86.068 20.8258 89.7328 22.0623C89.9654 22.1444 90.082 22.1852 90.222 22.2514C90.3541 22.3135 90.5057 22.4042 90.6657 22.518C90.7208 22.556 90.7719 22.5996 90.8703 22.6821C91.071 22.8504 91.314 23.0558 91.5835 23.2847C91.637 23.3262 91.6872 23.3653 91.7342 23.402C91.778 23.4361 91.82 23.4688 91.8601 23.5C92.1793 23.7297 92.5312 23.9859 92.908 24.2625C93.001 24.329 93.0906 24.3934 93.1768 24.4556C93.342 24.5752 93.5187 24.7042 93.7044 24.8407C93.7667 24.8879 93.826 24.9329 93.8824 24.9757C94.0028 25.0664 94.1306 25.1633 94.264 25.2651C94.3449 25.3262 94.4223 25.3846 94.4962 25.4402C95.5332 26.2483 96.6582 27.1245 97.8596 28.061C98.0531 28.2104 98.239 28.3533 98.4177 28.4901C111.45 38.4411 120.735 52.4939 124.697 68.5113C125.034 69.8732 125.337 71.261 125.602 72.6713C125.619 72.7663 125.636 72.8617 125.653 72.9576C125.688 73.1506 125.726 73.3452 125.766 73.5413C125.776 73.5898 125.786 73.6382 125.797 73.6868C125.83 73.8341 125.864 73.9822 125.9 74.1312C125.909 74.1722 125.918 74.2131 125.927 74.2541C126.02 74.7061 126.12 75.1634 126.226 75.626C126.234 75.6606 126.241 75.695 126.249 75.7293C126.336 76.0963 126.428 76.466 126.524 76.8385C126.536 76.8842 126.548 76.9298 126.56 76.9752C126.634 77.26 126.711 77.5469 126.791 77.8358C126.801 77.8735 126.811 77.911 126.821 77.9484C126.883 78.1633 126.947 78.3794 127.014 78.5968C127.022 78.6234 127.03 78.6499 127.038 78.6763C127.087 78.8351 127.137 78.9944 127.188 79.1542C127.194 79.1741 127.2 79.1939 127.206 79.2137C127.243 79.3331 127.281 79.4528 127.32 79.5728C175.238 62.783 175.238 62.783 175.238 62.783C158.468 148.824 135.155 158.46 110.5 158.46C85.8447 158.46 62.5317 148.824 43.6263 158.46Z" fill="url(#paint0_linear_2_2)"></path><defs><linearGradient id="paint0_linear_2_2" x1="-48.1554" y1="71.5" x2="181.428" y2="71.5" gradientUnits="userSpaceOnUse"><stop stop-color="#10B981"></stop><stop offset="0.5" stop-color="#06B6D4"></stop><stop offset="1" stop-color="#3B82F6"></stop></linearGradient></defs></svg>
+                                <span class="text-white text-xl font-bold ml-2">SwachhMitra</span>
+                            </div>
+                            <div class="relative">
+                                <i class="fas fa-bell text-gray-400 text-xl"></i>
+                                <div class="notification-dot"></div>
+                            </div>
+                        </div>
+
+                        <!-- App Content -->
+                        <div class="p-6">
+                            <!-- Balance -->
+                            <div class="bg-gradient-to-r from-green-500 to-cyan-500 p-6 rounded-2xl shadow-lg text-white">
+                                <span class="text-sm opacity-80">Your Balance</span>
+                                <div class="text-4xl font-bold mt-1">2,450 GP</div>
+                                <p class="text-sm opacity-90 mt-2">+ 50 GP from today's disposal</p>
+                            </div>
+
+                            <!-- Scan Button -->
+                            <div class="my-8 text-center">
+                                <button
+                                    class="w-48 h-48 bg-white rounded-full shadow-2xl flex flex-col items-center justify-center text-gray-800 hover:scale-105 transition-transform">
+                                    <i class="fas fa-qrcode text-6xl"></i>
+                                    <span class="text-xl font-bold mt-3">Scan to Dispose</span>
+                                </button>
+                            </div>
+
+
+                            <!-- Rewards -->
+                            <h3 class="text-white text-lg font-semibold mb-3">Rewards Nearby</h3>
+                            <div class="space-y-3">
+                                <!-- Reward 1 -->
+                                <div class="bg-gray-800 p-4 rounded-lg flex items-center">
+                                    <div class="bg-green-500 w-12 h-12 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-coffee text-white text-2xl"></i>
+                                    </div>
+                                    <div class="ml-4 flex-grow">
+                                        <h4 class="font-semibold text-white">Free Coffee</h4>
+                                        <p class="text-sm text-gray-400">Local Cafe</p>
+                                    </div>
+                                    <span class="font-bold text-green-400">500 GP</span>
+                                </div>
+                                <!-- Reward 2 -->
+                                <div class="bg-gray-800 p-4 rounded-lg flex items-center">
+                                    <div class="bg-blue-500 w-12 h-12 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-shopping-bag text-white text-2xl"></i>
+                                    </div>
+                                    <div class="ml-4 flex-grow">
+                                        <h4 class="font-semibold text-white">10% Off Groceries</h4>
+                                        <p class="text-sm text-gray-400">Kiran Mart</p>
+                                    </div>
+                                    <span class="font-bold text-green-400">1500 GP</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- App Footer Nav -->
+                        <div class="absolute bottom-0 left-0 right-0 h-20 bg-gray-800 rounded-t-2xl flex items-center justify-around">
+                            <i class="fas fa-home text-green-400 text-2xl"></i>
+                            <i class="fas fa-map-marker-alt text-gray-500 text-2xl"></i>
+                            <i class="fas fa-gift text-gray-500 text-2xl"></i>
+                            <i class="fas fa-user text-gray-500 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gamification Text -->
+                <div class="md:w-1/2">
+                    <h2 class="text-sm font-bold uppercase text-green-600 tracking-widest">Driving Participation</h2>
+                    <p class="text-4xl font-bold text-gray-900 mt-3 mb-6">Gamification for a Greener City</p>
+                    <p class="text-lg text-gray-600 mb-8">
+                        To create lasting behavioral change, we need to make segregation rewarding. Our app turns
+                        recycling into a game.
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-qrcode text-2xl text-green-500 mt-1"></i>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">Scan & Earn</h3>
+                                <p class="text-gray-600">Users scan their unique QR code on the app before disposing
+                                    waste to identify themselves.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-star text-2xl text-green-500 mt-1"></i>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">Earn "Green Points"</h3>
+                                <p class="text-gray-600">For every correct disposal (e.g., wet waste in the smart bin),
+                                    users are awarded "Green Points."</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-gift text-2xl text-green-500 mt-1"></i>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold">Redeem Rewards</h3>
+                                <p class="text-gray-600">Points can be redeemed for discounts and offers at local
+                                    businesses, creating a circular community economy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="py-20 bg-gray-100 fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center md:w-2/3 mx-auto">
+                    <h2 class="text-sm font-bold uppercase text-green-600 tracking-widest">For Municipalities</h2>
+                    <p class="text-4xl font-bold text-gray-900 mt-3 mb-6">AI-Powered Route Optimization</p>
+                    <p class="text-lg text-gray-600 mb-12">
+                        Our central dashboard gives municipal authorities a real-time "digital twin" of the city's waste
+                        infrastructure. AI analyzes fill-level data from all smart bins to generate the most
+                        fuel-efficient collection routes, dispatching trucks only where they are needed.
+                    </p>
+                </div>
+                <!-- Dashboard Mockup -->
+                <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+                    <!-- Dashboard Header -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-2xl font-bold text-gray-900">Municipal Dashboard - Waste Control</h3>
+                    </div>
+                    <!-- Dashboard Content -->
+                    <div class="flex flex-col lg:flex-row">
+                        <!-- Map -->
+                        <div class="lg:w-2/3 p-6 bg-gray-50 relative h-96 lg:h-auto">
+                            <img src="https://placehold.co/800x600/e2e8f0/64748b?text=City+Map+View"
+                                alt="City map with bin locations"
+                                class="absolute inset-0 w-full h-full object-cover opacity-30"
+                                onerror="this.src='https://placehold.co/800x600/e2e8f0/64748b?text=City+Map+View'">
+                            <div class="relative">
+                                <h4 class="text-xl font-semibold mb-4 text-gray-800">Live Bin Status</h4>
+                                <!-- Bins on map -->
+                                <div
+                                    class="absolute top-10 left-20 bg-red-500 p-2 rounded-full shadow-lg animate-pulse">
+                                    <i class="fas fa-dumpster text-white"></i>
+                                </div>
+                                <div class="absolute top-40 left-60 bg-green-500 p-2 rounded-full shadow-lg">
+                                    <i class="fas fa-dumpster text-white"></i>
+                                </div>
+                                <div class="absolute top-20 left-80 bg-yellow-500 p-2 rounded-full shadow-lg">
+                                    <i class="fas fa-dumpster text-white"></i>
+                                </div>
+                                <div class="absolute top-60 left-40 bg-red-500 p-2 rounded-full shadow-lg animate-pulse">
+                                    <i class="fas fa-dumpster text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Sidebar / Bin List -->
+                        <div class="lg:w-1/3 p-6 border-l border-gray-200 h-[500px] overflow-y-auto">
+                            <h4 class="text-xl font-semibold mb-4 text-gray-800">Optimized Route #10A</h4>
+                            <p class="text-gray-600 mb-6">Dispatching truck to 3 full bins (Saving 45% fuel).</p>
+                            <div class="space-y-4">
+                                <!-- Bin 1 -->
+                                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-red-800">Bin #004 (Sector 17)</span>
+                                        <span class="status-dot bg-red-500"></span>
+                                    </div>
+                                    <p class="text-sm text-red-700">Status: 98% FULL (Priority 1)</p>
+                                </div>
+                                <!-- Bin 2 -->
+                                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-red-800">Bin #012 (Market)</span>
+                                        <span class="status-dot bg-red-500"></span>
+                                    </div>
+                                    <p class="text-sm text-red-700">Status: 92% FULL (Priority 2)</p>
+                                </div>
+                                <!-- Bin 3 -->
+                                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-yellow-800">Bin #009 (Park)</span>
+                                        <span class="status-dot bg-yellow-500"></span>
+                                    </div>
+                                    <p class="text-sm text-yellow-700">Status: 71% FULL (Priority 3)</p>
+                                </div>
+                                <!-- Bin 4 -->
+                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-green-800">Bin #007 (Apt. Complex)</span>
+                                        <span class="status-dot bg-green-500"></span>
+                                    </div>
+                                    <p class="text-sm text-green-700">Status: 34% FULL (Skip)</p>
+                                </div>
+                                <!-- Bin 5 -->
+                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-green-800">Bin #002 (School)</span>
+                                        <span class="status-dot bg-green-500"></span>
+                                    </div>
+                                    <p class="text-sm text-green-700">Status: 22% FULL (Skip)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-white fade-in">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900">Get Involved</h2>
+                    <p class="text-lg text-gray-600 mt-3">We are looking for partners, municipal corporations, and
+                        citizens to join our mission.
+                    </p>
+                </div>
+                <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-xl border border-gray-100">
+                    <form id="contact-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Full
+                                    Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email
+                                    Address</label>
+                                <input type="email" id="email" name="email" required
+                                    class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <!-- Role -->
+                            <div class="md:col-span-2">
+                                <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">I am
+                                    a...</label>
+                                <select id="role" name="role"
+                                    class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option>Municipal Official</option>
+                                    <option>Potential Investor</option>
+                                    <option>Concerned Citizen</option>
+                                    <option>Business Owner (for Rewards)</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <!-- Message -->
+                            <div class="md:col-span-2">
+                                <label for="message"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+                                <textarea id="message" name="message" rows="5" required
+                                    class="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                            </div>
+                        </div>
+                        <div class="text-center mt-8">
+                            <button type="submit" id="submit-form-button"
+                                class="bg-green-500 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-green-600 transition-shadow shadow-lg hover:shadow-xl w-full md:w-auto">
+                                Send Message
+                            </button>
+                        </div>
+                        <div id="form-success" class="hidden mt-6 text-center p-4 bg-green-100 text-green-700 rounded-lg">
+                            Thank you! Your message has been sent successfully. We will get back to you soon.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div>
+                    <a href="#" class="flex items-center space-x-2 mb-4">
+                        <svg class="h-10 w-10" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M43.6263 158.46C18.4444 148.824 0 123.475 0 94.6288C0 57.0761 28.5861 24.343 64.918 19.1678C67.1424 18.7997 69.3093 18.5 71.5 18.5C73.6907 18.5 75.8576 18.7997 78.082 19.1678C82.1738 19.8519 86.068 20.8258 89.7328 22.0623C89.9654 22.1444 90.082 22.1852 90.222 22.2514C90.3541 22.3135 90.5057 22.4042 90.6657 22.518C90.7208 22.556 90.7719 22.5996 90.8703 22.6821C91.071 22.8504 91.314 23.0558 91.5835 23.2847C91.637 23.3262 91.6872 23.3653 91.7342 23.402C91.778 23.4361 91.82 23.4688 91.8601 23.5C92.1793 23.7297 92.5312 23.9859 92.908 24.2625C93.001 24.329 93.0906 24.3934 93.1768 24.4556C93.342 24.5752 93.5187 24.7042 93.7044 24.8407C93.7667 24.8879 93.826 24.9329 93.8824 24.9757C94.0028 25.0664 94.1306 25.1633 94.264 25.2651C94.3449 25.3262 94.4223 25.3846 94.4962 25.4402C95.5332 26.2483 96.6582 27.1245 97.8596 28.061C98.0531 28.2104 98.239 28.3533 98.4177 28.4901C111.45 38.4411 120.735 52.4939 124.697 68.5113C125.034 69.8732 125.337 71.261 125.602 72.6713C125.619 72.7663 125.636 72.8617 125.653 72.9576C125.688 73.1506 125.726 73.3452 125.766 73.5413C125.776 73.5898 125.786 73.6382 125.797 73.6868C125.83 73.8341 125.864 73.9822 125.9 74.1312C125.909 74.1722 125.918 74.2131 125.927 74.2541C126.02 74.7061 126.12 75.1634 126.226 75.626C126.234 75.6606 126.241 75.695 126.249 75.7293C126.336 76.0963 126.428 76.466 126.524 76.8385C126.536 76.8842 126.548 76.9298 126.56 76.9752C126.634 77.26 126.711 77.5469 126.791 77.8358C126.801 77.8735 126.811 77.911 126.821 77.9484C126.883 78.1633 126.947 78.3794 127.014 78.5968C127.022 78.6234 127.03 78.6499 127.038 78.6763C127.087 78.8351 127.137 78.9944 127.188 79.1542C127.194 79.1741 127.2 79.1939 127.206 79.2137C127.243 79.3331 127.281 79.4528 127.32 79.5728C175.238 62.783 175.238 62.783 175.238 62.783C158.468 148.824 135.155 158.46 110.5 158.46C85.8447 158.46 62.5317 148.824 43.6263 158.46Z" fill="url(#paint0_linear_3_2)"></path><defs><linearGradient id="paint0_linear_3_2" x1="-48.1554" y1="71.5" x2="181.428" y2="71.5" gradientUnits="userSpaceOnUse"><stop stop-color="#10B981"></stop><stop offset="0.5" stop-color="#06B6D4"></stop><stop offset="1" stop-color="#3B82F6"></stop></linearGradient></defs></svg>
+                        <span class="font-bold text-2xl text-white">Swachh<span
+                                class="text-green-400">Mitra</span></span>
+                    </a>
+                    <p class="max-w-xs">A smart, integrated ecosystem for automating and optimizing waste management in
+                        Indian cities.</p>
+                </div>
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#solution" class="hover:text-green-400">Our Solution</a></li>
+                        <li><a href="#features" class="hover:text-green-400">Core Features</a></li>
+                        <li><a href="#app" class="hover:text-green-400">Gamification App</a></li>
+                        <li><a href="#dashboard" class="hover:text-green-400">Municipal Dashboard</a></li>
+                        <li><a href="#contact" class="hover:text-green-400">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Project Stream -->
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Project</h4>
+                    <ul class="space-y-2">
+                        <li><span class="font-medium text-gray-200">Stream:</span> Smart Cities & Sustainability</li>
+                        <li><span class="font-medium text-gray-200">Mission:</span> Swachh Bharat 2.0</li>
+                    </ul>
+                </div>
+                <!-- Socials -->
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors">
+                            <i class="fab fa-twitter text-white"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors">
+                            <i class="fab fa-linkedin-in text-white"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors">
+                            <i class="fab fa-github text-white"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8 text-center">
+                <p>&copy; 2025 SwachhMitra. All rights reserved. An innovative project for a cleaner India.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (Order is important) -->
+    <script type="module">
+        // --- Import Firebase Services ---
+        // These are imported from CDN.
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Config (Provided by Canvas) ---
+        // These variables (`__firebase_config`, `__app_id`, `__initial_auth_token`) are injected by the environment.
+        // On your local machine, they will be undefined, and the Firebase logic will gracefully fail.
+        let db, auth;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // --- Form Elements ---
+        const contactForm = document.getElementById('contact-form');
+        const formSuccessMessage = document.getElementById('form-success');
+        const formSubmitButton = document.getElementById('submit-form-button');
+
+        // --- Try to Initialize and Authenticate Firebase ---
+        try {
+            if (Object.keys(firebaseConfig).length === 0) {
+                throw new Error("Firebase config is missing. Contact form will not work on local machine.");
+            }
+
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            setLogLevel('Debug');
+
+            // --- Authentication ---
+            if (initialAuthToken) {
+                await signInWithCustomToken(auth, initialAuthToken);
+                console.log("Firebase Authenticated with Custom Token");
+            } else {
+                await signInAnonymously(auth);
+                console.log("Firebase Authenticated Anonymously");
+            }
+
+            const userId = auth.currentUser?.uid || crypto.randomUUID();
+
+            // --- Firestore 'Get Involved' Form Logic ---
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (!db) {
+                        console.error("Firestore is not initialized.");
+                        return;
+                    }
+
+                    formSubmitButton.disabled = true;
+                    formSubmitButton.textContent = "Sending...";
+
+                    try {
+                        const name = document.getElementById('name').value;
+                        const email = document.getElementById('email').value;
+                        const role = document.getElementById('role').value;
+                        const message = document.getElementById('message').value;
+
+                        // --- Define the data collection path ---
+                        const inquiriesCollectionPath = `/artifacts/${appId}/users/${userId}/inquiries`;
+
+                        // Add a new document to the "inquiries" collection
+                        const docRef = await addDoc(collection(db, inquiriesCollectionPath), {
+                            name: name,
+                            email: email,
+                            role: role,
+                            message: message,
+                            timestamp: new Date()
+                        });
+
+                        console.log("Document written with ID: ", docRef.id);
+                        formSuccessMessage.classList.remove('hidden');
+                        contactForm.reset();
+
+                    } catch (error) {
+                        console.error("Error adding document: ", error);
+                        alert("Failed to send message. Please try again.");
+                    } finally {
+                        formSubmitButton.disabled = false;
+                        formSubmitButton.textContent = "Send Message";
+                    }
+                });
+            }
+
+        } catch (error) {
+            console.warn("Firebase Error: ", error.message);
+            // If Firebase fails, disable the contact form to avoid user confusion
+            if (contactForm) {
+                formSubmitButton.disabled = true;
+                formSubmitButton.textContent = "Contact Form Disabled";
+                const warning = document.createElement('p');
+                warning.textContent = "Note: Contact form is disabled in this local preview.";
+                warning.className = "text-center text-sm text-yellow-600 mt-4";
+                contactForm.appendChild(warning);
+            }
+        }
+
+    </script>
+
+
+    <!-- Page JavaScript (Animations & Waste Guide) -->
+    <script>
+        // --- Fade-in-on-scroll Animation ---
+        // This runs independently and will work everywhere.
+        document.addEventListener('DOMContentLoaded', () => {
+            const faders = document.querySelectorAll('.fade-in');
+
+            const appearOptions = {
+                threshold: 0.2, // Trigger when 20% of the element is visible
+                rootMargin: "0px 0px -50px 0px" // Start a little earlier
+            };
+
+            const appearOnScroll = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+        });
+
+
+        // --- Waste Disposal Guide Logic ---
+        // This also runs independently. Predefined search will work locally.
+        // AI search will fail gracefully.
+        window.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
+            const wasteInput = document.getElementById('waste-input');
+            const imageUpload = document.getElementById('image-upload');
+            const imageUploadLabel = document.getElementById('image-upload-label');
+            const imageUploadText = document.getElementById('image-upload-text');
+            const searchButton = document.getElementById('search-button');
+            const resultsContainer = document.getElementById('results-container');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const wasteResults = document.getElementById('waste-results');
+            const errorMessage = document.getElementById('error-message');
+
+            // --- API Configuration ---
+            const apiKey = ""; // Left empty for local use. Canvas injects this.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            let systemPromptText = `You are an expert assistant for 'SwachhMitra' (स्वच्छ मित्र). A user will provide text or an image of a waste item. Your job is to identify it and provide disposal instructions in both English and Hindi.
+Your response MUST follow this exact format:
+
+**Item (वस्तु):** [Item Name in English] ([Item Name in Hindi])
+**Type (प्रकार):** [Biodegradable / Non-Biodegradable] ([जैविक / अजैविक])
+
+**Disposal Instructions (निपटान के निर्देश):**
+* [Instruction 1 in English] ([Instruction 1 in Hindi])
+* [Instruction 2 in English] ([Instruction 2 in Hindi])
+* [Instruction 3 in English] ([Instruction 3 in Hindi])
+
+**Important (ज़रूरी):**
+If the item is 'Non-Biodegradable', you MUST add this line:
+'Please deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.'
+'(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)'`;
+
+            let base64Image = null;
+            let imageMimeType = null;
+
+
+            // --- New: Predefined Waste Data ---
+            const predefinedWasteData = new Map();
+            predefinedWasteData.set('plastic bottle', `**Item (वस्तु):** Plastic Bottle (प्लास्टिक की बोतल)\n**Type (प्रकार):** Non-Biodegradable (अजैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Empty and rinse the bottle. (बोतल को खाली करें और धो लें।)\n* Crush the bottle to save space. (जगह बचाने के लिए बोतल को कुचल दें।)\n* Put it in the 'DRY' or 'RECYCLABLE' bin. (इसे 'सूखे' या 'रीसाइक्लिंग' बिन में डालें।)\n\n**Important (ज़रूरी):**\nPlease deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.\n(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)`);
+            predefinedWasteData.set('banana peel', `**Item (वस्तु):** Banana Peel (केले का छिलका)\n**Type (प्रकार):** Biodegradable (जैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Put it in the 'WET' or 'ORGANIC' waste bin. (इसे 'गीले' या 'जैविक' कचरे के बिन में डालें।)\n* This can be composted at home. (इसे घर पर कंपोस्ट किया जा सकता है।)\n* Do not throw it in plastic bags. (इसे प्लास्टिक की थैलियों में न फेकें।)`);
+            predefinedWasteData.set('egg shells', `**Item (वस्तु):** Egg Shells (अंडे के छिलके)\n**Type (प्रकार):** Biodegradable (जैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Crush the shells. (छिलकों को कुचल दें।)\n* Put them in the 'WET' or 'ORGANIC' waste bin for composting. (इन्हें कंपोस्टिंग के लिए 'गीले' या 'जैविक' बिन में डालें।)\n* They are good for garden soil. (वे बगीचे की मिट्टी के लिए अच्छे होते हैं।)`);
+            predefinedWasteData.set('glass bottle', `**Item (वस्तु):** Glass Bottle (कांच की बोतल)\n**Type (प्रकार):** Non-Biodegradable (अजैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Empty and rinse the bottle. (बोतल को खाली करें और धो लें।)\n* Do not break the glass. (कांच को न तोड़ें।)\n* Give it to a 'Kabadiwala' or put in designated glass recycling. (इसे 'कबाड़ीवाला' को दें या निर्धारित ग्लास रीसाइक्लिंग में डालें।)\n\n**Important (ज़रूरी):**\nPlease deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.\n(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)`);
+            predefinedWasteData.set('paper', `**Item (वस्तु):** Paper (कागज़)\n**Type (प्रकार):** Biodegradable (जैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Keep it dry. (इसे सूखा रखें।)\n* Put it in the 'DRY' waste bin. (इसे 'सूखे' कचरे के बिन में डालें।)\n* It can be easily recycled if not contaminated with food. (अगर यह भोजन से दूषित नहीं है तो इसे आसानी से रीसायकल किया जा सकता है।)`);
+            predefinedWasteData.set('cardboard', `**Item (वस्तु):** Cardboard Box (गत्ते का डिब्बा)\n**Type (प्रकार):** Biodegradable (जैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Flatten the box to save space. (जगह बचाने के लिए डिब्बे को चपटा करें।)\n* Keep it dry and away from wet waste. (इसे सूखा रखें और गीले कचरे से दूर रखें।)\n* Put it in the 'DRY' bin or give for recycling. (इसे 'सूखे' बिन में डालें या रीसाइक्लिंग के लिए दें।)`);
+            predefinedWasteData.set('aluminum can', `**Item (वस्तु):** Aluminum Can (एल्यूमीनियम कैन)\n**Type (प्रकार):** Non-Biodegradable (अजैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Empty and rinse the can. (कैन को खाली करें और धो लें।)\n* Deposit it in the 'DRY' or 'RECYCLABLE' bin. (इसे 'सूखे' या 'रीसाइक्लिंग' बिन में जमा करें।)\n* Aluminum is 100% recyclable. (एल्यूमीनियम 100% रीसाइक्लेबल है।)\n\n**Important (ज़रूरी):**\nPlease deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.\n(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)`);
+            predefinedWasteData.set('battery', `**Item (वस्तु):** Battery (बैटरी)\n**Type (प्रकार):** Non-Biodegradable (E-waste) (अजैविक - ई-कचरा)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* DO NOT throw in regular dustbins. (नियमित कूड़ेदान में न फेंके।)\n* Batteries contain toxic chemicals. (बैटरी में जहरीले रसायन होते हैं।)\n* Store them separately and give them to an E-waste collection center. (इन्हें अलग से स्टोर करें और ई-वेस्ट कलेक्शन सेंटर को दें।)\n\n**Important (ज़रूरी):**\nPlease deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.\n(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)`);
+            predefinedWasteData.set('vegetable scraps', `**Item (वस्तु):** Vegetable Scraps (सब्जी के छिलके)\n**Type (प्रकार):** Biodegradable (जैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Collect all vegetable and fruit peels. (सभी सब्जी और फलों के छिलके इकट्ठा करें।)\n* Put them in the 'WET' (Green) bin. (इन्हें 'गीले' (हरे) बिन में डालें।)\n* Ideal for making compost for plants. (पौधों के लिए खाद बनाने के लिए आदर्श।)`);
+            predefinedWasteData.set('styrofoam', `**Item (वस्तु):** Styrofoam (स्टायरोफोम)\n**Type (प्रकार):** Non-Biodegradable (अजैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* This item is very difficult to recycle. (इस आइटम को रीसायकल करना बहुत मुश्किल है।)\n* Avoid using it if possible. (हो सके तो इसके इस्तेमाल से बचें।)\n* Put it in the 'DRY' waste bin. (इसे 'सूखे' कचरे के बिन में डालें।)\n\n**Important (ज़रूरी):**\nPlease deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.\n(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)`);
+            predefinedWasteData.set('light bulb', `**Item (वस्तु):** CFL/LED Bulb (CFL/LED बल्ब)\n**Type (प्रकार):** Non-Biodegradable (E-waste) (अजैविक - ई-कचरा)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Handle with care, do not break (especially CFLs, which contain mercury). (सावधानी से संभालें, तोड़ें नहीं (खासकर सीएफएल, जिसमें पारा होता है)।)\n* Wrap it in paper and store separately. (इसे कागज में लपेटें और अलग से स्टोर करें।)\n* Give it to a designated E-waste collection point. (इसे एक निर्धारित ई-कचरा संग्रह बिंदु पर दें।)\n\n**Important (ज़रूरी):**\nPlease deposit this at your nearest municipal collection center or designated recycling point. Contact your local municipality for details.\n(इसको अपने नज़दीकी (nearby) municipal collection center या designated recycling point पर जमा करें। अपने local municipality से संपर्क करें।)`);
+            predefinedWasteData.set('apple core', `**Item (वस्तु):** Apple Core (सेब का बचा हिस्सा)\n**Type (प्रकार):** Biodegradable (जैविक)\n\n**Disposal Instructions (निपटान के निर्देश):**\n* Put it in the 'WET' or 'ORGANIC' waste bin. (इसे 'गीले' या 'जैविक' कचरे के बिन में डालें।)\n* This can be easily composted. (इसे आसानी से कंपोस्ट किया जा सकता है।)\n* Do not throw it on the road. (इसे सड़क पर न फेकें।)`);
+            // --- End of Predefined Data ---
+
+
+            // --- Event Listeners ---
+            searchButton.addEventListener('click', handleSearch);
+
+            imageUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                imageUploadText.textContent = file.name;
+                imageUploadLabel.classList.add('bg-blue-600');
+                imageUploadLabel.classList.remove('bg-gray-700');
+
+                // Read and convert image to base64
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    base64Image = e.target.result.split(',')[1]; // Get base64 part
+                    imageMimeType = file.type;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // --- Main Search Handler ---
+            async function handleSearch() {
+                showLoading(true);
+                const textQuery = wasteInput.value;
+
+                // Priority: Image > Text
+                if (base64Image && imageMimeType) {
+                    await callGeminiVision(base64Image, imageMimeType, textQuery);
+                } else if (textQuery) {
+                    await handleTextSearch(textQuery);
+                } else {
+                    showError("Please enter a waste item or upload an image.");
+                }
+
+                // Clear image after search
+                resetImageUpload();
+            }
+
+            // --- Handle Text Search (with Predefined Check) ---
+            async function handleTextSearch(text) {
+                const searchTerm = text.toLowerCase().trim();
+
+                // Check predefined list first
+                if (predefinedWasteData.has(searchTerm)) {
+                    console.log("Showing predefined result for:", searchTerm);
+                    const instructions = predefinedWasteData.get(searchTerm);
+                    // Use a small timeout to simulate loading
+                    setTimeout(() => {
+                        displayResults(instructions);
+                    }, 300);
+                } else {
+                    // If not in the list, call Gemini AI
+                    console.log("Calling AI for:", searchTerm);
+                    await callGeminiText(text);
+                }
+            }
+
+
+            // --- Call Gemini with Text ---
+            async function callGeminiText(text) {
+                const payload = {
+                    contents: [{
+                        parts: [{ text: text }]
+                    }],
+                    systemInstruction: {
+                        parts: [{ text: systemPromptText }]
+                    }
+                };
+                await makeApiCall(payload);
+            }
+
+            // --- Call Gemini with Image (Vision) ---
+            async function callGeminiVision(base64Data, mimeType, textQuery) {
+                const textPart = {
+                    text: textQuery ?
+                        `User has uploaded an image and also provided text: "${textQuery}". Identify the waste item from the image and text.` :
+                        `Identify the waste item in this image.`
+                };
+
+                const imagePart = {
+                    inlineData: {
+                        mimeType: mimeType,
+                        data: base64Data
+                    }
+                };
+
+                const payload = {
+                    contents: [{
+                        parts: [textPart, imagePart]
+                    }],
+                    systemInstruction: {
+                        parts: [{ text: systemPromptText }]
+                    }
+                };
+                await makeApiCall(payload);
+            }
+
+            // --- Reusable API Fetch Function ---
+            async function makeApiCall(payload) {
+                if (apiKey === "") {
+                    showError("AI search is disabled in this local preview. Please try a predefined item like 'plastic bottle' or 'banana peel'.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (text) {
+                        displayResults(text);
+                    } else {
+                        showError("Could not get a valid response from the AI. Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    showError(`An error occurred: ${error.message}. Please check your network or API key.`);
+                }
+            }
+
+            // --- UI Helper Functions ---
+            function showLoading(isLoading) {
+                resultsContainer.classList.remove('hidden');
+                errorMessage.classList.add('hidden');
+                wasteResults.classList.add('hidden');
+                loadingSpinner.classList.toggle('hidden', !isLoading);
+                if (isLoading) {
+                    searchButton.disabled = true;
+                } else {
+                    searchButton.disabled = false;
+                }
+            }
+
+            function displayResults(text) {
+                showLoading(false);
+                wasteResults.innerHTML = text;
+                wasteResults.classList.remove('hidden');
+            }
+
+            function showError(message) {
+                showLoading(false);
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('hidden');
+            }
+
+            function resetImageUpload() {
+                imageUpload.value = null;
+                base64Image = null;
+                imageMimeType = null;
+                imageUploadText.textContent = "Use Camera";
+                imageUploadLabel.classList.remove('bg-blue-600');
+                imageUploadLabel.classList.add('bg-gray-700');
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
+
